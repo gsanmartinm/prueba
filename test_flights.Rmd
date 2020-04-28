@@ -14,5 +14,12 @@ names(flights)
 boxplot(flights$distance)
 hist(flights$arr_delay)
 summary(flights)
+
+#vamos a realizar un análisis tipo EDA
+library(ggplot2)
+ggplot(flights,aes(x=distance,y=arr_delay))+
+  geom_point()
+
+
 ```
 
