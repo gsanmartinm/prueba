@@ -1,0 +1,18 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+THis is a test
+```{r}
+library(nycflights13)
+flights <- nycflights13::flights
+names(flights)
+str(flights)
+library(lubridate)
+names(flights)
+boxplot(flights$distance)
+hist(flights$arr_delay)
+summary(flights)
+```
+
