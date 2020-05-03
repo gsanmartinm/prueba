@@ -30,11 +30,74 @@ barplot(z$sum)
 
 b <- flights %>% group_by(dest) %>% summarize(mean(arr_delay,na.rm=TRUE))
 dest_vector <- b[,1]
-
+dest_vector
 origin_vector
 origin_EWR <- flights %>% filter(origin=="EWR") %>% ggplot(aes(x=arr_delay,y=distance),color=dest)+
   geom_point()
 origin_EWR
+
+
+#ahora generaremos una rutina que repetiremos con una función para los 105 destinos
+
+names(flights)
+str(flights)
+grafico <- function(origen) {
+ggplot(flights,aes(x=dep_delay,y=arr_delay,color=origin))+
+  geom_point()
+}
+
+# alguna estacionalidad del rretraso?
+library(hrbrthemes)
+
+ggplot(flights, aes(x = month, y = arr_delay, color = month, group = month))+
+geom_boxplot()
+meses <- c(1:11)
+
+r <- flights %>% group_by(month) %>% summarize(retraso_prom = mean(arr_delay,na.rm=TRUE))
+barplot(r$retraso_prom,legend.text = "meses del año",xlab = "meses año 2013", ylab = "retraso promedio")
+
+flights %>% group_by(month) %>% summarize(retraso_prom = mean(arr_delay,na.rm=TRUE)) %>% ggplot(aes(x=month,y=retraso_prom))+
+  geom_line( color="grey") +
+  geom_point(shape=21, color="black", fill="#69b3a2", size=6) +
+  theme_ipsum() +
+  scale_x_continuous(name="mes",breaks = c(1:12),limits = c(1,12))+
+  scale_y_continuous(name="arrival delay",breaks = c(-5,0,5,10,15,20),limits = c(-10,25))+  
+  ggtitle("arrival delay average by month, all origins, all dest")
+
+#meses de verano son los que mas tienen retraso
+
+#cuales origenes tienen mayores retrasos en la partida?
+flights %>% group_by(origin) %>% summarize(retraso_despegue = mean(dep_delay,na.rm=TRUE)) %>% ggplot(aes(x=origin,y=retraso_despegue))+
+  geom_line( color="grey") +
+  geom_point(shape=21, color="black", fill="#69b3a2", size=6)
+#se observa que EWR tiene los promedios de retr
+#hay que revisar las distribuciones de retrasos de despegue según origen
+
+cv_dep_delay <- flights %>% group_by(origin) %>% summarize(prom_dep_delay = mean(dep_delay, na.rm=TRUE), devest = sd(dep_time,na.rm=TRUE))
+library(viridis)
+library(hrbrthemes)
+
+ggplot(cv_dep_delay,aes(x=devest, y=prom_dep_delay,color=origin))+
+  geom_point()+
+  theme_ipsum_es()
+  
+
+plot(cv_dep_delay$prom_dep_delay,cv_dep_delay$devest)
+
+```
+
+
+
+webscrapping
+```{r}
+library(httr)
+library(gdata)
+url <- "https://www.emol.com/"
+resp <- GET(url)
+head(resp)
+raw_content <- content(resp,as="raw")
+
+head(raw_content)
 
 ```
 
